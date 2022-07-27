@@ -1,0 +1,32 @@
+gateway:
+  routes:
+    - id: PRODUCTS
+      uri:
+        lb: //PRODUCTS-MICROSERVICE
+      predicates:
+        - Path=/products/**
+    - id: PURCHASES
+      uri:
+        lb: //PURCHASES-MICROSERVICE
+      predicates:
+        - Path=/purchase/**
+    - id: SALES
+      uri:
+        lb: //SALES-MICROSERVICE
+      predicates:
+        - Path=/v1/sale/**
+    - id: ITEMS
+      uri:
+        lb: //ITEMS-MICROSERVICE
+      predicates:
+        - Path=/item/**
+    - id: INVOICE
+      uri:
+        lb: //INVOICE-MICROSERVICE
+      predicates:
+        - Path=/invoice/**
+    - id: CUSTOMERS
+      uri:
+        lb: CUSTOMER-MICROSERVICE
+      predicates:
+        - Path=/v1/customer/**, /v1/direction/**
