@@ -4,10 +4,10 @@ import com.example.invoice.dto.InvoiceDto;
 import com.example.invoice.dto.InvoiceUpdate;
 import com.example.invoice.model.InvoiceEntity;
 import com.example.invoice.model.response.OrderResponse;
+import models.OrderRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.MapperConfig;
 import org.mapstruct.Mapping;
-import util.models.OrderRequest;
 
 import java.util.List;
 

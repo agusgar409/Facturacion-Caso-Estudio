@@ -3,6 +3,8 @@ package com.example.invoice.controller;
 import com.H2Config;
 import com.example.invoice.api.ApiConstants;
 import com.example.invoice.model.response.OrderResponseList;
+import models.OrderRequest;
+import models.ProductRequest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +20,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import request.ProductRequest;
 import util.AbstractTest;
-import util.TemplateResponse;
-import util.models.OrderRequest;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -42,9 +41,6 @@ class InvoicingControllerTest extends AbstractTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
-
-    @MockBean
-    TemplateResponse templateResponse;
 
     MockMvc mockMvc;
 
@@ -69,7 +65,7 @@ class InvoicingControllerTest extends AbstractTest {
                 .category(3)
                 .customer(42013929L)
                 .description("prueba junit")
-                .status(2L)
+                .status(1L)
                 .total(120D)
                 .date(LocalDate.ofEpochDay(2022-8-3))
                 .listProducts(Collections.singletonList(productRequest))
@@ -141,7 +137,7 @@ class InvoicingControllerTest extends AbstractTest {
 
         OrderResponseList responseList = mapToObject(content, OrderResponseList.class);
 
-        Assertions.assertThat(responseList.getTotalElements()).isEqualTo(5);
+        Assertions.assertThat(responseList.getTotalElements()).isEqualTo(4);
         Assertions.assertThat(responseList.getTotalPages()).isEqualTo(1);
         Assertions.assertThat(responseList.getNextUri()).isEqualTo("http://localhost/invoice/?status=2&page=1");
         Assertions.assertThat(responseList.getPreviousUri()).isEqualTo("http://localhost/invoice/?status=2&page=0");
@@ -218,7 +214,7 @@ class InvoicingControllerTest extends AbstractTest {
 
         mockMvc.perform(delete("/invoice/F-2022-7-4")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isGone())
+                .andExpect(status().isOk())
                 .andDo(print());
     }
 }

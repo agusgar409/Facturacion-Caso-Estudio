@@ -12,21 +12,20 @@ import com.example.invoice.repository.InvoiceItemRepository;
 import com.example.invoice.repository.InvoiceRepository;
 import com.example.invoice.service.InvoiceService;
 import com.example.invoice.specification.OrderSpecification;
-import errors.DeletionInvalidException;
+import errors.CategoryInvalidException;
 import errors.NotFoundException;
+import errors.StatusInvalidException;
 import lombok.RequiredArgsConstructor;
+import models.ItemResponse;
+import models.OrderRequest;
+import models.ProductRequest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import util.NumberGenerator;
-import util.TemplateResponse;
-import util.models.ItemResponse;
-import util.models.ItemsEditDto;
-import util.models.OrderRequest;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -47,25 +46,47 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final OrderSpecification specification;
 
     @Override
-    public InvoiceDto createOrderRequest(OrderRequest inputOrder) {
+    public InvoiceDto createOrderRequest(OrderRequest inputOrder) throws CategoryInvalidException, StatusInvalidException {
 
         InvoiceEntity invoiceEntity = invoiceMapperStruct.inputOrder2InvoiceEntity(inputOrder);
 
-        if(inputOrder.getStatus() == 2){
-            throw new DeletionInvalidException(inputOrder.getCustomer());
+        if(inputOrder.getCategory() != 3){
+            throw new CategoryInvalidException(inputOrder.getCategory());
+        }else if(inputOrder.getStatus() == 2){
+            throw new StatusInvalidException(inputOrder.getStatus());
         }
 
+
         invoiceEntity.setNumber(generator.generateNumberOrder(invoiceEntity.getCategory(), invoiceRepository.getLast()));
-        invoiceEntity.setTotal(productClient.calcTotal(inputOrder.getListProducts()));
+
+        calculateTotalProducts(inputOrder,invoiceEntity);
+
         invoiceEntity = invoiceRepository.save(invoiceEntity);
+
         addInvoiceItems(inputOrder,invoiceEntity.getIdInvoice());
 
         return invoiceMapperStruct.invoiceEntity2InvoiceDto(invoiceEntity);
     }
 
+    private void calculateTotalProducts(OrderRequest inputOrder, InvoiceEntity invoiceEntity) {
+
+        for(ProductRequest product: inputOrder.getListProducts()){
+            productClient.getProducts(product.getId());
+        }
+        invoiceEntity.setTotal(productClient.calcTotal(inputOrder.getListProducts()));
+    }
+
     private void addInvoiceItems(OrderRequest inputOrder, Long idInvoice) {
 
-        Long[] idItems = itemClient.newItem(inputOrder).getBody().toArray(new Long[0]);
+        List<Long> response = itemClient.newItem(inputOrder).getBody();
+
+
+        if(response.isEmpty()){
+            throw new NotFoundException(inputOrder);
+        }
+        Long[] idItems = response.toArray(new Long[0]);
+
+
         List<ItemResponse> setItems = Arrays.stream(idItems).map(ItemResponse::new).toList();
 
         setItems.forEach(itemResponse -> {
@@ -92,7 +113,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         Specification<InvoiceEntity> spec = specification.getAllBySpec(filter);
         List<InvoiceEntity> page = invoiceRepository.findAll(spec);
         InvoiceEntityList invoiceOrderList = new InvoiceEntityList(page.stream().toList(), pageRequest, page.stream().count());
-        return buildSaleOrderList(invoiceOrderList);
+        return buildInvoiceOrderList(invoiceOrderList);
     }
 
     @Override
@@ -109,7 +130,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         return invoiceRepository.getByNumber(number).orElseThrow(() -> new NotFoundException(number));
     }
 
-    private OrderResponseList buildSaleOrderList(InvoiceEntityList invoiceOrderList) {
+    private OrderResponseList buildInvoiceOrderList(InvoiceEntityList invoiceOrderList) {
         return OrderResponseList.builder()
                 .content(invoiceMapperStruct.listOrderToListOrderResponse(invoiceOrderList.getContent()))
                 .totalPages(invoiceOrderList.getTotalPages())

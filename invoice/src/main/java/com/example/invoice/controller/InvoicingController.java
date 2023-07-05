@@ -2,16 +2,17 @@ package com.example.invoice.controller;
 
 import com.example.invoice.api.ApiConstants;
 import com.example.invoice.dto.InvoiceDto;
-import com.example.invoice.dto.InvoiceUpdate;
 import com.example.invoice.model.filter.OrderRequestFilter;
 import com.example.invoice.model.response.OrderResponseList;
 import com.example.invoice.service.InvoiceService;
+import errors.CategoryInvalidException;
+import errors.StatusInvalidException;
+import models.OrderRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import util.models.OrderRequest;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -25,7 +26,7 @@ public class InvoicingController {
 
     @Transactional
     @PostMapping()
-    public ResponseEntity<InvoiceDto> newInvoice(@RequestBody OrderRequest orderRequest){
+    public ResponseEntity<InvoiceDto> newInvoice(@Valid @RequestBody OrderRequest orderRequest) throws CategoryInvalidException, StatusInvalidException {
 
         InvoiceDto numberInvoice = invoiceService.createOrderRequest(orderRequest);
 

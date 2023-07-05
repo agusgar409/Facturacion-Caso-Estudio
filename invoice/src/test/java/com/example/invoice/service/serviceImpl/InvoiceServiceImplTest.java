@@ -7,7 +7,11 @@ import com.example.invoice.model.InvoiceEntity;
 import com.example.invoice.model.InvoiceItems;
 import com.example.invoice.repository.InvoiceItemRepository;
 import com.example.invoice.repository.InvoiceRepository;
+
+import errors.CategoryInvalidException;
 import errors.DeletionInvalidException;
+
+import models.OrderRequest;
 import org.junit.jupiter.api.*;
 import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
@@ -16,9 +20,6 @@ import org.mockito.Spy;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import util.NumberGenerator;
-import util.TemplateResponse;
-import util.models.ItemResponse;
-import util.models.OrderRequest;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -50,9 +51,6 @@ class InvoiceServiceImplTest {
 
     @Mock
     private NumberGenerator generator;
-
-    @Mock
-    private TemplateResponse templateResponse;
 
     @InjectMocks
     private InvoiceServiceImpl invoiceService;
@@ -87,7 +85,7 @@ class InvoiceServiceImplTest {
 
     /*
     @Test
-    void createOrderRequestAndSaveInvoiceCorrectly() {
+    void createOrderRequestAndSaveInvoiceCorrectly() throws CategoryInvalidException, StatusInvalidExeption {
 
         invoiceEntity.setNumber(stringNumber);
         invoiceEntity.setIdInvoice(3L);

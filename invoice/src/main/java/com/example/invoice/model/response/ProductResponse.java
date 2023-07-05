@@ -10,7 +10,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProductResponse {
 
-    @JsonProperty("id_product")
-    private Long id;
+    private Integer id;
+
+    private Integer amount;
+
+    private Double price;
+
+    private String name;
+
+    private String description;
 
 }

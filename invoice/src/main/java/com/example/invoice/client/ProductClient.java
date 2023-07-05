@@ -1,11 +1,13 @@
 package com.example.invoice.client;
 
+import com.example.invoice.model.response.ProductResponse;
+import errors.NotFoundException;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import models.ProductRequest;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import request.ProductRequest;
-import util.models.ItemEditStock;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -13,10 +15,25 @@ import java.util.List;
 @FeignClient(name = "products-microservice")
 public interface ProductClient {
 
-    @RequestMapping(value = "/products/editStock", method = RequestMethod.PUT)
-    boolean editStockProducts(@Valid @RequestBody ItemEditStock purchaseRequest);
 
-    @RequestMapping(value = "/products/calcTotal", method = RequestMethod.POST)
-    Double calcTotal(@Valid @RequestBody List<ProductRequest> productRequestList);
+    @PostMapping("/products/calcTotal")
+    @ResponseStatus(HttpStatus.OK)
+    @CircuitBreaker(name = "productCB", fallbackMethod = "errorProductCalcTotalFallback")
+    Double calcTotal(@RequestBody List<ProductRequest> productRequestList);
+
+    @GetMapping("/products/{code}")
+    @ResponseStatus(HttpStatus.OK)
+    @CircuitBreaker(name = "productCB", fallbackMethod = "errorGetProductFallback")
+    ProductResponse getProducts(@Valid @PathVariable("code") int code);
+
+    default Double errorProductCalcTotalFallback(List<ProductRequest> productRequestList, Exception exc) {
+        System.out.println("aca ocurrio un error con calc total");
+        throw new NotFoundException(productRequestList);
+    }
+
+    default ProductResponse errorGetProductFallback(int code, Exception exc){
+        System.out.println("aca ocurrio un error obtener producto");
+        throw new NotFoundException(code);
+    }
 
 }

@@ -3,16 +3,22 @@ package com.example.invoice.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 @Table(name = "invoice")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Data
 public class InvoiceEntity {
 
@@ -43,4 +49,12 @@ public class InvoiceEntity {
 
     @Column(name = "category")
     private Integer category;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        InvoiceEntity that = (InvoiceEntity) o;
+        return idInvoice != null && Objects.equals(idInvoice, that.idInvoice);
+    }
 }

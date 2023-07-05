@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: invoiceService
+  cloud:
+    config:
+      uri: http://localhost:8100
+      username: root
+      password: s3cr3t
+      enabled: true

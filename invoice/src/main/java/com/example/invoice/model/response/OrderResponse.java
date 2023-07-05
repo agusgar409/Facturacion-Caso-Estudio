@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -27,14 +26,10 @@ public class OrderResponse {
     @JsonProperty("status")
     private Long status;
 
-    @JsonProperty("listProducts")
-    private List<ProductResponse> listProducts;
-
     @JsonProperty("category")
-    private Long idCategory;
+    private Long category;
 
     @JsonProperty("total")
     private Double total;
-
 
 }
