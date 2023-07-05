@@ -11,12 +11,13 @@ import java.time.LocalDate;
 @Component
 public class NumberGenerator {
 
+
     /**
-     * @param idCategory  identificador de que tipo de orden se trata. Compra/Venta/Facturacion
-     *                    Compra -> 1
-     *                    Venta -> 2
-     *                    Facturacion -> 3
-     * @param idExist ultimo numero de orden persistido en la base de datos
+     * @param idCategory identificador de que tipo de orden se trata. Compra/Venta/Facturacion
+     *                   Compra -> 1
+     *                   Venta -> 2
+     *                   Facturacion -> 3
+     * @param idExist    ultimo numero de orden persistido en la base de datos
      * @return number; identificador de la nueva orden.
      * Formato de valor a devolver = "V-2022-6-1"
      */
