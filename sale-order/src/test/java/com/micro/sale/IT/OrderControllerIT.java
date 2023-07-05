@@ -16,10 +16,9 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import request.ProductRequest;
+import models.ProductRequest;
 import util.AbstractTest;
-import util.TemplateResponse;
-import util.models.OrderRequest;
+import models.OrderRequest;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -46,8 +45,6 @@ class OrderControllerIT extends AbstractTest {
 
     MockMvc mockMvc;
 
-    @MockBean
-    TemplateResponse templateResponse;
 
     @BeforeAll
     public void setUp() {

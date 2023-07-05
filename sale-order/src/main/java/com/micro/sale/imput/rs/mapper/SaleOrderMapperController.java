@@ -5,7 +5,7 @@ import com.micro.sale.imput.rs.request.OrderUpdateRequest;
 import com.micro.sale.imput.rs.response.OrderResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import util.models.OrderRequest;
+import models.OrderRequest;
 
 import java.util.List;
 

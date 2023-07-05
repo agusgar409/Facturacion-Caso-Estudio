@@ -15,10 +15,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import request.ProductRequest;
+import models.ProductRequest;
 import util.AbstractTest;
 import util.NumberGenerator;
-import util.models.OrderRequest;
+import models.OrderRequest;
 
 import java.time.LocalDate;
 import java.util.List;

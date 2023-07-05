@@ -1,11 +1,8 @@
 package com.micro.sale.domain.usercase;
 
 import com.micro.sale.domain.model.SaleOrder;
-import com.micro.sale.imput.rs.request.OrderRequestFilter;
 import com.micro.sale.imput.rs.request.OrderUpdateRequest;
-import com.micro.sale.imput.rs.response.OrderResponseList;
-import org.springframework.data.domain.PageRequest;
-import util.models.OrderRequest;
+import models.OrderRequest;
 
 /**
  * @author jrodriguez

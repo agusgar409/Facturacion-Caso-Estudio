@@ -8,13 +8,13 @@ import com.micro.sale.imput.rs.request.OrderRequestFilter;
 import com.micro.sale.imput.rs.request.OrderUpdateRequest;
 import com.micro.sale.imput.rs.response.OrderResponseList;
 import lombok.RequiredArgsConstructor;
+import models.OrderRequest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import util.models.OrderRequest;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;

@@ -10,7 +10,7 @@ import org.mapstruct.Mapping;
 /**
  * @author jrodriguez
  */
-@Mapper
+@Mapper(componentModel = "spring")
 public interface StatusMapperController {
 
     Status toStatus(StatusRequest request);

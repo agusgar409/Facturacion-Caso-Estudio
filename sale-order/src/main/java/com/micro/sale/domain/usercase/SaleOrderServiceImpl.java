@@ -8,21 +8,20 @@ import com.micro.sale.domain.repository.SaleOrderItemRepository;
 import com.micro.sale.domain.repository.SaleOrderRepository;
 import com.micro.sale.domain.repository.StatusRepository;
 import com.micro.sale.imput.rs.clients.ItemClient;
-import com.micro.sale.imput.rs.clients.ProductClient;
 import com.micro.sale.imput.rs.request.OrderUpdateRequest;
 import errors.DeletionInvalidException;
 import errors.InvalidStatusChanceException;
-import errors.InvalidStatusException;
 import errors.NotFoundException;
+import errors.StatusInvalidException;
 import lombok.RequiredArgsConstructor;
+import models.ItemResponse;
+import models.ItemsEditDto;
+import models.OrderRequest;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import request.ProductRequest;
+import util.CalculateTotal;
 import util.NumberGenerator;
-import util.models.ItemResponse;
-import util.models.ItemsEditDto;
-import util.models.OrderRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,9 +36,9 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     private final SaleOrderRepository orderRepository;
     private final SaleOrderItemRepository orderItemRepository;
     private final StatusRepository statusRepository;
-    private final ProductClient productClient;
     private final ItemClient itemClient;
     private final NumberGenerator generator;
+    private final CalculateTotal calculateTotal;
 
 
     /**
@@ -59,7 +58,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         return order.getNumber();
     }
 
-
     private Long persistOrder(SaleOrder order) {
         return orderRepository.save(order).getId();
     }
@@ -67,18 +65,18 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     private void verifyStatus(SaleOrder order) {
         Status status = getStatusById(order.getStatus().getId());
         if (status.getName().equals(StatusEnum.DEVUELTA))
-            throw new InvalidStatusException(status.getName());
+            throw new StatusInvalidException(status.getName());
     }
 
     private void setNumberAndStatusAndTotal(SaleOrder order, OrderRequest inputOrder) {
         String number = generator.generateNumberOrder(order.getIdCategory(), orderRepository.getLast());
         order.setNumber(number);
         order.setStatus(getStatusById(order.getStatus().getId()));
-        order.setTotal(calcTotal(inputOrder.getListProducts()));
+        order.setTotal(calculateTotal.calcTotal(inputOrder.getListProducts()));
     }
 
     private void saveOrderItem(OrderRequest inputOrder, Long idOrder) {
-        getItems(inputOrder).forEach(item -> {
+        this.getItems(inputOrder).forEach(item -> {
             SaleOrderItem orderItem = SaleOrderItem.builder()
                     .idOrder(idOrder)
                     .idItem(item.getId())
@@ -89,6 +87,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
     private List<ItemResponse> getItems(OrderRequest inputOrder) {
         List<Long> idItems = itemClient.newItem(inputOrder).getBody();
+        assert idItems != null;
         return idItems.stream().map(ItemResponse::new).toList();
     }
 
@@ -162,16 +161,20 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     }
 
     @Transactional
-    private void rollBackStock(Long idOrder) {
-        List<Long> listIdItems = orderItemRepository.findByIdOrder(idOrder).stream()
+    public void rollBackStock(Long idOrder) {
+        List<Long> listIdItems = getListIdItems(idOrder);
+        ItemsEditDto itemsEdit =
+                ItemsEditDto.builder()
+                        .listItems(listIdItems)
+                        .build();
+        itemClient.editStockProducts(itemsEdit, true);
+    }
+
+    @NotNull
+    private List<Long> getListIdItems(Long idOrder) {
+        return orderItemRepository.findByIdOrder(idOrder).stream()
                 .map(SaleOrderItem::getIdItem)
                 .collect(Collectors.toList());
-        ItemsEditDto request = ItemsEditDto.builder().listItems(listIdItems).build();
-        itemClient.editStockProducts(request, true);
     }
 
-
-    private Double calcTotal(List<ProductRequest> listProducts) {
-        return productClient.calcTotal(listProducts);
-    }
 }

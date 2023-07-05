@@ -1,10 +1,7 @@
 package com.micro.sale.common.exception.handler;
 
 
-import errors.DeletionInvalidException;
-import errors.InvalidStatusChanceException;
-import errors.InvalidStatusException;
-import errors.NotFoundException;
+import errors.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,8 +27,9 @@ public class GlobalHandlerException {
             javax.validation.ConstraintViolationException.class,
             javax.validation.UnexpectedTypeException.class,
             org.springframework.web.bind.MethodArgumentNotValidException.class,
-            InvalidStatusException.class,
-            InvalidStatusChanceException.class
+            StatusInvalidException.class,
+            InvalidStatusChanceException.class,
+            CreationClassException.class
     })
     @ResponseBody
     protected ExceptionDetails badRequestHandler(Exception exception, HttpServletRequest request) {
@@ -42,6 +40,7 @@ public class GlobalHandlerException {
     @ExceptionHandler({
             HttpRequestMethodNotSupportedException.class,
             NotFoundException.class,
+            ProductNotFoundException.class
     })
     @ResponseBody
     protected ExceptionDetails notFoundHandler(Exception exception, HttpServletRequest request) {
