@@ -1,15 +1,15 @@
 package com.example.purchase.controller;
 
 import com.example.purchase.H2Config;
-import com.example.purchase.model.response.PurchaseResponse;
-import com.example.purchase.model.Item;
-import com.example.purchase.model.PurchaseOrder;
-import com.example.purchase.model.request.PurchaseOrderRequest;
+import com.example.purchase.domain.model.Item;
+import com.example.purchase.domain.model.PurchaseOrder;
+import com.example.purchase.domain.model.request.PurchaseOrderRequest;
+import com.example.purchase.domain.model.response.PurchaseResponse;
+import models.ProductRequest;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
@@ -17,9 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import request.ProductRequest;
 import util.AbstractTest;
-import util.TemplateResponse;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -44,14 +42,9 @@ class PurchaseControllerTest extends AbstractTest {
     MockMvc mockMvc;
 
 
-    @MockBean
-    TemplateResponse templateResponse;
-
-
-
-    private static PurchaseOrder purchase =  new PurchaseOrder();
+    private static PurchaseOrder purchase = new PurchaseOrder();
     private static PurchaseOrder purchase2 = new PurchaseOrder();
-    private static List<PurchaseOrder> purchaseList =  new ArrayList<>();
+    private static List<PurchaseOrder> purchaseList = new ArrayList<>();
     private static ProductRequest product = new ProductRequest();
 
     private static List<Item> list = new ArrayList<>();
@@ -91,6 +84,7 @@ class PurchaseControllerTest extends AbstractTest {
         assertThat(content).isNotBlank();
 
     }
+
     @Test
     @Order(1)
     void deleteByNumber() throws Exception {
@@ -109,9 +103,10 @@ class PurchaseControllerTest extends AbstractTest {
                 .getResponse()
                 .getContentAsString();
     }
+
     @Test
     @Order(3)
-    void getPurchaseById() throws Exception{
+    void getPurchaseById() throws Exception {
         String content = mockMvc.perform(get("http://localhost:8083/purchase/F-2022-7-2"))
                 .andExpect(status().isFound())
                 .andDo(print())
@@ -128,6 +123,7 @@ class PurchaseControllerTest extends AbstractTest {
                 .getResponse()
                 .getContentAsString();
     }
+
     @Test
     @Order(4)
     void changeStatusOrder() throws Exception {
@@ -148,6 +144,7 @@ class PurchaseControllerTest extends AbstractTest {
                 .getContentAsString();
 
     }
+
     @Test
     @Order(5)
     void newPurchase() throws Exception {

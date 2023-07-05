@@ -1,11 +1,12 @@
 package com.example.purchase.service.serviceImpl;
 
-import com.example.purchase.model.response.PurchaseResponse;
-import com.example.purchase.mapper.PurchaseOrderMapperController;
-import com.example.purchase.model.Item;
-import com.example.purchase.model.PurchaseOrder;
-import com.example.purchase.model.request.PurchaseOrderRequest;
-import com.example.purchase.repository.PurchaseOrderRepository;
+import com.example.purchase.application.service.serviceImpl.PurchaseServiceImpl;
+import com.example.purchase.domain.model.response.PurchaseResponse;
+import com.example.purchase.domain.mapper.PurchaseOrderMapperController;
+import com.example.purchase.domain.model.Item;
+import com.example.purchase.domain.model.PurchaseOrder;
+import com.example.purchase.domain.model.request.PurchaseOrderRequest;
+import com.example.purchase.domain.repository.PurchaseOrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
@@ -13,7 +14,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.springframework.web.client.RestTemplate;
-import request.ProductRequest;
+import models.ProductRequest;
 
 import java.util.ArrayList;
 import java.util.List;

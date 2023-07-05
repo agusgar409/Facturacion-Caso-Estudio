@@ -1,13 +1,11 @@
 package com.example.products.service.impl;
 
-import com.example.products.models.Product;
-import com.example.products.repository.ProductRepository;
+import com.example.products.domain.models.Product;
+import com.example.products.domain.repository.ProductRepository;
+import com.example.products.domain.service.impl.ProductServiceImpl;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 
@@ -17,7 +15,7 @@ class staticProductServiceImplTest {
     private ProductRepository productRepository;
 
     @InjectMocks
-    private  ProductServiceImpl productService;
+    private ProductServiceImpl productService;
 
     private static Product product;
     private static Product product2;
