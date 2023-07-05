@@ -34,11 +34,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
-
     private final CustomerRepository repository;
     private final CustomerTypeService typeService;
-    private final CustomerMapper mapper;
-    private final CustomerSpecification spec;
 
 
     @Transactional
@@ -107,37 +104,6 @@ public class CustomerServiceImpl implements CustomerService {
         return repository.findById(id).orElseThrow(() -> new NotFoundException(id));
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public CustomerResponseList getAllCustomerByPageAndFilter(PageRequest pageRequest, CustomerRequestFilter filter) {
-        Specification<Customer> customerSpec = spec.getAllSpecification(filter);
-        Page<Customer> page = repository.findAll(customerSpec, pageRequest);
-        CustomerList customerList = new CustomerList(page.getContent(), pageRequest, page.getTotalElements());
-        return buildOrderList(customerList);
-    }
 
-    private CustomerResponseList buildOrderList(CustomerList customerList) {
-        return CustomerResponseList.builder()
-                .content(getContent(customerList))
-                .totalPages(customerList.getTotalPages())
-                .totalElements(customerList.getTotalElements())
-                .nextUri(getNextPage(customerList))
-                .previousUri(getPreviousPage(customerList))
-                .build();
-    }
-
-    private List<CustomerResponse> getContent(CustomerList list) {
-        return mapper.listCustomerToListCustomerResponse(list.getContent());
-    }
-
-    private String getNextPage(CustomerList customerlist) {
-        final int nextPage = customerlist.getPageable().next().getPageNumber();
-        return ApiConstants.uriByPageAsString.apply(nextPage);
-    }
-
-    private String getPreviousPage(CustomerList customerlist) {
-        final int previousPage = customerlist.getPageable().previousOrFirst().getPageNumber();
-        return ApiConstants.uriByPageAsString.apply(previousPage);
-    }
 
 }

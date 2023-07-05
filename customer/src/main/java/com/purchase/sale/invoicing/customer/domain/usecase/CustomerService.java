@@ -17,6 +17,5 @@ public interface CustomerService {
 
     void update(Long id, Customer request);
 
-    CustomerResponseList getAllCustomerByPageAndFilter(PageRequest pageRequest, CustomerRequestFilter filter);
 
 }

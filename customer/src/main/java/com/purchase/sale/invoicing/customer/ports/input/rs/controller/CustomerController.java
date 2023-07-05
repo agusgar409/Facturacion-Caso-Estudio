@@ -1,6 +1,7 @@
 package com.purchase.sale.invoicing.customer.ports.input.rs.controller;
 
 import com.purchase.sale.invoicing.customer.domain.usecase.CustomerService;
+import com.purchase.sale.invoicing.customer.domain.usecase.impl.Pagination;
 import com.purchase.sale.invoicing.customer.ports.input.rs.api.ApiConstants;
 import com.purchase.sale.invoicing.customer.ports.input.rs.mapper.CustomerMapper;
 import com.purchase.sale.invoicing.customer.ports.input.rs.request.CustomerRequest;
@@ -27,6 +28,7 @@ import java.net.URI;
 @RequestMapping(ApiConstants.Customer_URI)
 @RequiredArgsConstructor
 public class CustomerController {
+    private final Pagination pagination;
     private final CustomerMapper mapper;
     private final CustomerService service;
 
@@ -68,7 +70,7 @@ public class CustomerController {
         CustomerRequestFilter filter = CustomerRequestFilter.builder()
                 .idType(idType)
                 .build();
-        CustomerResponseList listResponse = service.getAllCustomerByPageAndFilter(PageRequest.of(page, size), filter);
+        CustomerResponseList listResponse = pagination.getAllCustomerByPageAndFilter(PageRequest.of(page, size), filter);
         return ResponseEntity.ok().body(listResponse);
     }
 
@@ -77,7 +79,7 @@ public class CustomerController {
     public ResponseEntity<CustomerResponseList> getAllCustomer(CustomerRequestFilter filter,
                                                                @RequestParam(defaultValue = "0", required = false) Integer page,
                                                                @RequestParam(defaultValue = "10", required = false) Integer size) {
-        CustomerResponseList listResponse = service.getAllCustomerByPageAndFilter(PageRequest.of(page, size), filter);
+        CustomerResponseList listResponse = pagination.getAllCustomerByPageAndFilter(PageRequest.of(page, size), filter);
         return ResponseEntity.ok().body(listResponse);
     }
 
